@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 });
 // sendFile will go here
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, '/index.html'));
+  res.sendFile(path.join(__dirname, '/frontend/index.html'));
 });
 
 app.listen(port, () => {
