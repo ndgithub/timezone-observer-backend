@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 
 let port = process.env.PORT;
 if (port == null || port == '') {
@@ -7,7 +8,11 @@ if (port == null || port == '') {
 }
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('fuck you!');
+});
+// sendFile will go here
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, '/index.html'));
 });
 
 app.listen(port, () => {
