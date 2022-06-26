@@ -38,7 +38,7 @@ function addPlace(place) {
   let lat = place.geometry.location.lat();
   let lng = place.geometry.location.lng();
 
-  fetch(`http://localhost:8000/api?lat=${lat}&lng=${lng}`)
+  fetch(`https://sleepy-taiga-55992.herokuapp.com/api?lat=${lat}&lng=${lng}`)
     .then((response) => response.json())
     .then((data) => {
       console.log(data);

@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // });
 
 app.get('/api', (req, res) => {
-  console.log('app.get');
+  console.log('app.gasdfasdfasdfadfet');
   sysServ = {};
   sysServ.timestamp = Math.floor(Date.now() / 1000);
   sysServ.offset = new Date().getTimezoneOffset();
