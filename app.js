@@ -24,6 +24,9 @@ app.get('/api', (req, res) => {
   console.log(
     `System time is ${sysServ.timestamp} secs since epoch,Timezone is ${sysServ.tzName}`
   );
+  console.log(
+    `https://maps.googleapis.com/maps/api/timezone/json?location=${req.query.lat}%2C${req.query.lng}&timestamp=${sysServ.timestamp}&key=${process.env.API_KEY}`
+  );
   axios
     .get(
       `https://maps.googleapis.com/maps/api/timezone/json?location=${req.query.lat}%2C${req.query.lng}&timestamp=${sysServ.timestamp}&key=${process.env.API_KEY}`
