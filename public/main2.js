@@ -45,7 +45,7 @@ function addPlace(place) {
 
   // https://sleepy-taiga-55992.herokuapp.com
 
-  fetch(`${process.env.HOST}/api?lat=${lat}&lng=${lng}`)
+  fetch(`/api?lat=${lat}&lng=${lng}`)
     .then((response) => response.json())
     .then((data) => {
       place.utcOffset = data.dstOffset + data.rawOffset;
