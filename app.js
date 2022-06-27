@@ -1,10 +1,8 @@
 import 'dotenv/config';
 import { formatTime } from './timeUtils.js';
-
 import express from 'express';
 const app = express();
 import axios from 'axios';
-const API_KEY = 'AIzaSyBAOc9xl7yekh32ePNqbyi2l5mDVXAx4YM';
 let port = process.env.PORT;
 if (port == null || port == '') {
   port = 8000;
@@ -24,7 +22,7 @@ app.get('/api', (req, res) => {
   axios
     .get(
       //`https://timeapi.io/api/Time/current/coordinate?latitude=${req.query.lat}&longitude=${req.query.lng}`
-      `https://maps.googleapis.com/maps/api/timezone/json?location=${req.query.lat}%2C${req.query.lng}&timestamp=${sysServ.timestamp}&key=${API_KEY}`
+      `https://maps.googleapis.com/maps/api/timezone/json?location=${req.query.lat}%2C${req.query.lng}&timestamp=${sysServ.timestamp}&key=${process.env.API_KEY}`
     )
     .then(function (response) {
       console.log(response);
