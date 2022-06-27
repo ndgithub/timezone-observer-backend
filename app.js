@@ -1,24 +1,20 @@
-console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+import 'dotenv/config';
+import { formatTime } from './timeUtils.js';
 
-const express = require('express');
+import express from 'express';
 const app = express();
-const path = require('path');
-const axios = require('axios');
+import axios from 'axios';
 const API_KEY = 'AIzaSyBAOc9xl7yekh32ePNqbyi2l5mDVXAx4YM';
 let port = process.env.PORT;
 if (port == null || port == '') {
   port = 8000;
 }
 
-app.use(express.static(path.join(__dirname, 'public')));
-// sendFile will go here
-// app.get('/', function (req, res) {
-//   res.sendFile(path.join(__dirname, '/public/index.html'));
-// });
+app.use(express.static('public'));
 
 app.get('/api', (req, res) => {
   console.log('app.gasdfasdfasdfadfet');
-  sysServ = {};
+  let sysServ = {};
   sysServ.timestamp = Math.floor(Date.now() / 1000);
   sysServ.offset = new Date().getTimezoneOffset();
   sysServ.tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -44,6 +40,8 @@ app.get('/api', (req, res) => {
 
 app.listen(port, () => {
   console.log(
-    `*******************************************************************************************************************************************Example app listening on port ${port}`
+    `--------Example app listening on port ${port} at ${formatTime(
+      Date.now()
+    )}--------`
   );
 });

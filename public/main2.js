@@ -15,7 +15,7 @@ function initMap() {
     disableDefaultUI: false,
   });
 
-  sys.Offset = new Date().getTimezoneOffset();
+  sys.utcOffset = new Date().getTimezoneOffset() * 60;
   sys.tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
   console.log(`System time is ${getSysNow()} secs since epoch,
   Timezone is ${sys.tzName}`);
@@ -23,54 +23,41 @@ function initMap() {
   // TODO: Get current time and timezone of user
   // for each each added place, including (my default), just get timezone and calculate offset
 }
-function placesObserver() {
-  document.getElementById('place-list').innerHTML = '';
-  infoWindows.forEach((infoWindow) => infoWindow.close());
-  // https://timeapi.io/api/Time/current/zone?timeZone=america/chicago
-  places.forEach((place, i) => {
-    console.log(place);
-    let lat = place.geometry.location.lat();
-    let lng = place.geometry.location.lng();
-  });
-}
 
 function addPlace(place) {
   let lat = place.geometry.location.lat();
   let lng = place.geometry.location.lng();
 
-  fetch(`https://sleepy-taiga-55992.herokuapp.com/api?lat=${lat}&lng=${lng}`)
+  // https://sleepy-taiga-55992.herokuapp.com
+
+  fetch(`http://localhost:8000/api?lat=${lat}&lng=${lng}`)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
-      let marker = new google.maps.Marker({
+      place.marker = new google.maps.Marker({
         position: place.geometry.location,
         map: map,
+        visible: false,
       });
+      place.infoWindow = new google.maps.InfoWindow({});
+      place.utcOffset = data.dstOffset + data.rawOffset;
+
+      place.sysOffset = place.utcOffset + sys.utcOffset;
+      console.log('asdfasfasdfas');
+      console.log(places);
+      places.push(place);
+      updateTimes();
     })
     .catch((error) => {
       console.log('There has been a problem with your fetch operation:', error);
     });
-
-  console.log('asdf');
-  // TODO get timezone id.
-  place.marker = new google.maps.Marker({
-    position: place.geometry.location,
-    map: map,
-  });
-
-  console.log(place);
-
-  place.infoWindow = new google.maps.InfoWindow({
-    content: `${place.formatted_address}`, // <h3>${formatTime(data.dateTime)}</h3>`,
-  });
-  console.log(place);
-
-  places.push(place);
-  placesObserver();
 }
 
 function updateUiPlaces() {}
-
+function updateTimes() {
+  places.forEach((place) => {
+    place.infoWindow.setContent(`${formatTime(getSysNow() + place.sysOffset)}`);
+  });
+}
 // Updates the time of placeObject
 function setTimes() {}
 function initAutoComplete() {
@@ -112,7 +99,8 @@ function dayOfWk(dayNum) {
 }
 
 function formatTime(dateTime) {
-  let now = new Date(dateTime);
+  console.log(dateTime);
+  let now = new Date(dateTime * 1000);
   let isAm = now.getHours() < 12 ? true : false;
   let hour = isAm ? now.getHours() : now.getHours() - 12;
   let minute =
