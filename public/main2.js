@@ -1,13 +1,16 @@
 let places = [];
 let sys = {};
 let map;
+let placeIdCounter = 0;
+
 function initMap() {
   console.log('asdf');
-
+  timeUpdater();
   initAutoComplete();
   document
     .getElementById('refresh-button')
-    .addEventListener('click', () => placesObserver());
+    .addEventListener('click', () => updateTimes());
+
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 30.2672, lng: -97.7431 },
     zoom: 4,
@@ -24,7 +27,18 @@ function initMap() {
   // for each each added place, including (my default), just get timezone and calculate offset
 }
 
+function timeUpdater() {
+  setInterval(() => {
+    places.forEach((place) => {
+      place.infWin.setContent(formatTime(getSysNow() + place.sysOffset));
+    });
+  }, 1000);
+}
+
 function addPlace(place) {
+  place.id = placeIdCounter;
+  placeIdCounter++;
+
   let lat = place.geometry.location.lat();
   let lng = place.geometry.location.lng();
 
@@ -39,6 +53,7 @@ function addPlace(place) {
         position: place.geometry.location,
         map: map,
         visible: true,
+        label: 'aasdf',
       });
       let infWin = new google.maps.InfoWindow({});
       place.infWin = infWin;
@@ -50,20 +65,68 @@ function addPlace(place) {
       });
 
       console.log(places);
+      addUiPlace(place);
       places.push(place);
-      updateTimes();
     })
     .catch((error) => {
       console.log('There has been a problem with your fetch operation:', error);
     });
 }
 
-function updateUiPlaces() {}
-function updateTimes() {
-  places.forEach((place) => {
-    place.infoWindow.setContent();
+function removePlace(id) {
+  places.splice(1, 1);
+  console.log('remove-place');
+  places.forEach((place, i) => {
+    console.log(place.id);
+    console.log(id);
+    if (place.id === Number(id)) {
+      console.log('matches id');
+      places[i].infWin.close();
+      places[i].marker.setVisible(false);
+      places.splice(i, 1);
+
+      //TODO:  close the infowindow and remove the marker first.
+    }
+  });
+  console.log(places);
+  updateUiPlaces();
+}
+
+function updateUiPlaces() {
+  document.getElementById('place-list').innerHTML = '';
+
+  places.forEach((place, i) => {
+    const placeElem = document.createElement('div');
+    placeElem.dataset.id = place.id;
+    const textnode = document.createTextNode(place.formatted_address);
+
+    const removeButton = document.createElement('button');
+    removeButton.appendChild(document.createTextNode('remove'));
+    removeButton.addEventListener('click', (e) => {
+      removePlace(placeElem.dataset.id);
+    });
+    placeElem.appendChild(textnode);
+    placeElem.appendChild(removeButton);
+    document.getElementById('place-list').appendChild(placeElem);
   });
 }
+
+function addUiPlace(place) {
+  //add address to ui list
+  const placeElem = document.createElement('div');
+  placeElem.dataset.id = place.id;
+  const textnode = document.createTextNode(place.formatted_address);
+
+  const removeButton = document.createElement('button');
+  removeButton.appendChild(document.createTextNode('remove'));
+  removeButton.addEventListener('click', (e) => {
+    removePlace(placeElem.dataset.id);
+  });
+  placeElem.appendChild(textnode);
+  placeElem.appendChild(removeButton);
+  document.getElementById('place-list').appendChild(placeElem);
+}
+function updateTimes() {}
 // Updates the time of placeObject
 function setTimes() {}
 function initAutoComplete() {
@@ -105,7 +168,6 @@ function dayOfWk(dayNum) {
 }
 
 function formatTime(dateTime) {
-  console.log(dateTime);
   let now = new Date(dateTime * 1000);
   let isAm = now.getHours() < 12 ? true : false;
   let hour = isAm ? now.getHours() : now.getHours() - 12;
@@ -115,8 +177,8 @@ function formatTime(dateTime) {
     now.getSeconds() < 10 ? '0' + now.getSeconds() : now.getSeconds();
   let amPm = isAm ? 'AM' : 'PM';
   let day = dayOfWk(now.getDay());
-  return `${day} <br>
-  ${hour}:${minute}:${seconds} ${amPm}`;
+  return `<div><strong>${day} <br>
+  ${hour}:${minute}:${seconds} ${amPm}<strong></div>`;
 }
 function getSysNow() {
   return Math.floor(Date.now() / 1000);
