@@ -2,6 +2,7 @@ let places = [];
 let sys = {};
 let map;
 let placeIdCounter = 0;
+let host = '';
 
 function initMap() {
   console.log('asdf');
@@ -44,7 +45,7 @@ function addPlace(place) {
 
   // https://sleepy-taiga-55992.herokuapp.com
 
-  fetch(`http://localhost:8000/api?lat=${lat}&lng=${lng}`)
+  fetch(`${process.env.HOST}/api?lat=${lat}&lng=${lng}`)
     .then((response) => response.json())
     .then((data) => {
       place.utcOffset = data.dstOffset + data.rawOffset;
