@@ -33,16 +33,22 @@ function addPlace(place) {
   fetch(`http://localhost:8000/api?lat=${lat}&lng=${lng}`)
     .then((response) => response.json())
     .then((data) => {
+      place.utcOffset = data.dstOffset + data.rawOffset;
+      place.sysOffset = place.utcOffset + sys.utcOffset;
       place.marker = new google.maps.Marker({
         position: place.geometry.location,
         map: map,
-        visible: false,
+        visible: true,
       });
-      place.infoWindow = new google.maps.InfoWindow({});
-      place.utcOffset = data.dstOffset + data.rawOffset;
+      let infWin = new google.maps.InfoWindow({});
+      place.infWin = infWin;
+      place.infWin.setContent(formatTime(getSysNow() + place.sysOffset));
+      place.infWin.open({
+        anchor: place.marker,
+        map,
+        shouldFocus: false,
+      });
 
-      place.sysOffset = place.utcOffset + sys.utcOffset;
-      console.log('asdfasfasdfas');
       console.log(places);
       places.push(place);
       updateTimes();
@@ -55,7 +61,7 @@ function addPlace(place) {
 function updateUiPlaces() {}
 function updateTimes() {
   places.forEach((place) => {
-    place.infoWindow.setContent(`${formatTime(getSysNow() + place.sysOffset)}`);
+    place.infoWindow.setContent();
   });
 }
 // Updates the time of placeObject

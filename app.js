@@ -21,7 +21,6 @@ app.get('/api', (req, res) => {
   console.log(sysServ);
   axios
     .get(
-      //`https://timeapi.io/api/Time/current/coordinate?latitude=${req.query.lat}&longitude=${req.query.lng}`
       `https://maps.googleapis.com/maps/api/timezone/json?location=${req.query.lat}%2C${req.query.lng}&timestamp=${sysServ.timestamp}&key=${process.env.API_KEY}`
     )
     .then(function (response) {
