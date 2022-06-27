@@ -5,12 +5,8 @@ let placeIdCounter = 0;
 let host = '';
 
 function initMap() {
-  console.log('asdf');
   timeUpdater();
   initAutoComplete();
-  document
-    .getElementById('refresh-button')
-    .addEventListener('click', () => updateTimes());
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 30.2672, lng: -97.7431 },
@@ -23,9 +19,6 @@ function initMap() {
   sys.tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
   console.log(`System time is ${getSysNow()} secs since epoch,
   Timezone is ${sys.tzName}`);
-  console.log(sys);
-  // TODO: Get current time and timezone of user
-  // for each each added place, including (my default), just get timezone and calculate offset
 }
 
 function timeUpdater() {
@@ -42,8 +35,6 @@ function addPlace(place) {
 
   let lat = place.geometry.location.lat();
   let lng = place.geometry.location.lng();
-
-  // https://sleepy-taiga-55992.herokuapp.com
 
   fetch(`/api?lat=${lat}&lng=${lng}`)
     .then((response) => response.json())
@@ -75,7 +66,6 @@ function addPlace(place) {
 }
 
 function removePlace(id) {
-  places.splice(1, 1);
   console.log('remove-place');
   places.forEach((place, i) => {
     console.log(place.id);
@@ -99,14 +89,14 @@ function updateUiPlaces() {
   places.forEach((place, i) => {
     const placeElem = document.createElement('div');
     placeElem.dataset.id = place.id;
-    const textnode = document.createTextNode(place.formatted_address);
+    const addressNode = document.createTextNode(place.formatted_address);
 
     const removeButton = document.createElement('button');
     removeButton.appendChild(document.createTextNode('remove'));
     removeButton.addEventListener('click', (e) => {
       removePlace(placeElem.dataset.id);
     });
-    placeElem.appendChild(textnode);
+    placeElem.appendChild(addressNode);
     placeElem.appendChild(removeButton);
     document.getElementById('place-list').appendChild(placeElem);
   });
