@@ -14,9 +14,7 @@ app.get('/api', (req, res) => {
   console.log('asdfasdfs');
   console.log(req.query.lng);
   console.log(process.env.API_KEY);
-  console.log(
-    `https://maps.googleapis.com/maps/api/timezone/json?location=${req.query.lat}%2C${req.query.lng}&timestamp=${sysServ.timestamp}&key=${process.env.API_KEY}`
-  );
+
   let sysServ = {};
   sysServ.timestamp = Math.floor(Date.now() / 1000);
   sysServ.offset = new Date().getTimezoneOffset();
