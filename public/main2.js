@@ -10,9 +10,9 @@ function initMap() {
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 30.2672, lng: -97.7431 },
-    zoom: 4,
+    zoom: 2,
     mapType: 'satellite',
-    disableDefaultUI: false,
+    disableDefaultUI: true,
   });
 
   sys.utcOffset = new Date().getTimezoneOffset() * 60;
@@ -44,8 +44,7 @@ function addPlace(place) {
       place.marker = new google.maps.Marker({
         position: place.geometry.location,
         map: map,
-        visible: true,
-        label: 'aasdf',
+        visible: false,
       });
       let infWin = new google.maps.InfoWindow({});
       place.infWin = infWin;
@@ -56,31 +55,17 @@ function addPlace(place) {
         shouldFocus: false,
       });
 
-      console.log(places);
-      addUiPlace(place);
       places.push(place);
+      places.sort((a, b) => {
+        if (a.utcOffset > b.utcOffset) return 1;
+        return -1;
+      });
+
+      updateUiPlaces();
     })
     .catch((error) => {
       console.log('There has been a problem with your fetch operation:', error);
     });
-}
-
-function removePlace(id) {
-  console.log('remove-place');
-  places.forEach((place, i) => {
-    console.log(place.id);
-    console.log(id);
-    if (place.id === Number(id)) {
-      console.log('matches id');
-      places[i].infWin.close();
-      places[i].marker.setVisible(false);
-      places.splice(i, 1);
-
-      //TODO:  close the infowindow and remove the marker first.
-    }
-  });
-  console.log(places);
-  updateUiPlaces();
 }
 
 function updateUiPlaces() {
@@ -88,10 +73,16 @@ function updateUiPlaces() {
 
   places.forEach((place, i) => {
     const placeElem = document.createElement('div');
+    placeElem.classList.add('place');
     placeElem.dataset.id = place.id;
-    const addressNode = document.createTextNode(place.formatted_address);
 
+    // placeElem.addEventListener('mouseover', () => {
+    //   document.getElementsByClassName()
+    // });
+
+    const addressNode = document.createTextNode(place.formatted_address);
     const removeButton = document.createElement('button');
+    removeButton.classList.add('remove-button');
     removeButton.appendChild(document.createTextNode('remove'));
     removeButton.addEventListener('click', (e) => {
       removePlace(placeElem.dataset.id);
@@ -100,30 +91,41 @@ function updateUiPlaces() {
     placeElem.appendChild(removeButton);
     document.getElementById('place-list').appendChild(placeElem);
   });
-}
 
-function addUiPlace(place) {
-  //add address to ui list
-  const placeElem = document.createElement('div');
-  placeElem.dataset.id = place.id;
-  const textnode = document.createTextNode(place.formatted_address);
-
-  const removeButton = document.createElement('button');
-  removeButton.appendChild(document.createTextNode('remove'));
-  removeButton.addEventListener('click', (e) => {
-    removePlace(placeElem.dataset.id);
+  let bounds = new google.maps.LatLngBounds();
+  places.forEach((place) => {
+    console.log(place);
+    bounds.extend(place.geometry.location);
+    map.fitBounds(bounds);
   });
-  placeElem.appendChild(textnode);
-  placeElem.appendChild(removeButton);
-  document.getElementById('place-list').appendChild(placeElem);
+  //map.fitBounds(bounds);
 }
-function updateTimes() {}
-// Updates the time of placeObject
-function setTimes() {}
+
+function removePlace(id) {
+  console.log('remove-place');
+  places.forEach((place, i) => {
+    if (place.id === Number(id)) {
+      places[i].infWin.close();
+      places[i].marker.setVisible(false);
+      places.splice(i, 1);
+      //TODO:  close the infowindow and remove the marker first.
+    }
+  });
+  console.log(places);
+  updateUiPlaces();
+}
+
 function initAutoComplete() {
   const input = document.getElementById('pac-input');
   const options = {
-    fields: ['formatted_address', 'geometry'],
+    types: [
+      'administrative_area_level_1',
+      'administrative_area_level_2',
+      'administrative_area_level_3',
+      'country',
+      'locality',
+    ],
+    fields: ['formatted_address', 'geometry', 'address_components'],
   };
   const autocomplete = new google.maps.places.Autocomplete(input, options);
   autocomplete.addListener('place_changed', function () {
@@ -168,8 +170,8 @@ function formatTime(dateTime) {
     now.getSeconds() < 10 ? '0' + now.getSeconds() : now.getSeconds();
   let amPm = isAm ? 'AM' : 'PM';
   let day = dayOfWk(now.getDay());
-  return `<div><strong>${day} <br>
-  ${hour}:${minute}:${seconds} ${amPm}<strong></div>`;
+  return `<div class="infowindow-day"><strong>${day} </div>
+ <div class="infowindow-time"> ${hour}:${minute} ${amPm}<strong></div>`;
 }
 function getSysNow() {
   return Math.floor(Date.now() / 1000);

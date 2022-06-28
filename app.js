@@ -26,7 +26,6 @@ app.get('/api', (req, res) => {
     )
     .then(function (response) {
       console.log(response);
-
       res.send(response.data);
     })
     .catch(function (error) {
@@ -39,7 +38,7 @@ app.get('/api', (req, res) => {
 
 app.listen(port, () => {
   console.log(
-    `--------Example app listening on port ${port} at ${formatTime(
+    `--------app.js: Listening on port ${port} at ${formatTime(
       Date.now()
     )}--------`
   );

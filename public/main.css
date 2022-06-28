@@ -16,20 +16,40 @@ html,
 body {
   margin: 0px;
   padding: 0px;
+  font-family: Roboto, Arial, system-ui, sans-serif;
 }
 
 #controls {
   position: absolute;
   display: flex;
-  flex-direction: row;
-  top: 50;
-  left: 50;
+  flex-direction: column;
+  top: 10;
+  left: 10;
   border: 1px solid black;
   z-index: 1;
-  background-color: rgb(255, 255, 255, 0.8);
+  background-color: rgb(255, 255, 255, 0);
+}
+
+#pac-input {
+  width: 250px;
 }
 
 #place-list {
   display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  background-color: #ffffff;
+}
+
+.place {
+  display: flex;
   flex-direction: row;
+  justify-content: space-between;
+}
+
+.infowindow-time {
+  font-size: 20px;
+}
+
+.infowindow-day {
 }
