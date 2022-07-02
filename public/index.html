@@ -2,8 +2,12 @@
   <head>
     <title>Time Zone Observer</title>
     <meta charset="utf-8" />
-    <style></style>
-    <script type="application/javascript" src="main2.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script type="application/javascript" src="utils.js"></script>
+    <script type="application/javascript" src="main.js"></script>
     <link rel="stylesheet" href="main.css" />
   </head>
 
@@ -11,7 +15,7 @@
     <div id="app">
       <div id="controls">
         <div id="search">
-          <input type="text" id="pac-input" placeholder="Search" />
+          <input type="text" id="pac-input" placeholder="City Name" />
         </div>
         <div id="place-list"></div>
       </div>
@@ -20,7 +24,7 @@
     <script
       async
       defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwDWeZXTKdg5VLLskzAuwl4_jQjmhhnj4&libraries=places,drawing&callback=initMap"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwDWeZXTKdg5VLLskzAuwl4_jQjmhhnj4&libraries=places,drawing&v=beta&callback=initMap"
       charset="utf-8"
     ></script>
   </body>

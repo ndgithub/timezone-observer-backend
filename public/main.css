@@ -25,13 +25,14 @@ body {
   flex-direction: column;
   top: 10;
   left: 10;
-  border: 1px solid black;
+  border: 0px;
   z-index: 1;
   background-color: rgb(255, 255, 255, 0);
 }
 
 #pac-input {
-  width: 250px;
+  width: 100%;
+  min-width: 300px;
 }
 
 #place-list {
@@ -39,17 +40,61 @@ body {
   flex-direction: column;
   margin-top: 20px;
   background-color: #ffffff;
+  border: 1px solid #aaaaaa;
 }
 
 .place {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding: 5px;
 }
 
+.remove-button {
+  visibility: hidden;
+}
+
+.place:hover .remove-button {
+  visibility: visible;
+}
 .infowindow-time {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .infowindow-day {
+}
+
+.address {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.address-component {
+  margin-right: 6px;
+}
+.locality {
+  font-weight: bold;
+  font-family: Arial;
+  font-size: 14px;
+}
+
+.admin {
+  font-weight: bold;
+
+  font-size: 12px;
+  margin-bottom: 1px;
+  color: #666666;
+}
+
+.country {
+  font-weight: bold;
+
+  font-size: 12px;
+  margin-bottom: 1px;
+  color: #666666;
+}
+
+.marker {
+  opacity: 0.3;
+  margin-right: 10px;
 }
